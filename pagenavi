@@ -1,0 +1,68 @@
+<?php 
+//$url:/page以前のurl
+//$first_page_url:例えば2ページ目からは/archive/page/2と表示したかったりするから、その配慮
+//$posts_per_page:ページに表示する記事件数
+//$page_btn_counts:現在表示しているページから何ページ分隣のページボタンを出すか。デフォルトは1。例えば現在5ページ目のとき、
+//表示されるページは1...456...xとなる感じ
+//$posts_count:総記事数
+$mysql_query="SELECT count(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post'")
+$posts_count = $wpdb->get_var($mysql_query);
+//$posts_countにはカテゴリーの記事数やらユーザーの記事数やら適当に入れましょう。
+//省略部分を、xxページあったら10刻みに追加したり、も実装すべき。
+function nochira_pagenavi($url=home_url(),$first_page_url=home_url(),$posts_per_page=10,$page_btn_counts=1,$posts_count){
+			if ($posts_count > $posts_per_page) : 
+			?>
+			<div class="page-navi clearfix index--page-navi">
+				<div class="wp-pagenavi clearFix">
+					<?php
+						$all_pages_amari = $posts_count % $posts_per_page;
+						$all_pages = floor($posts_count / $posts_per_page);
+						if($all_pages_amari > 0) :
+							$all_pages += 1;
+						endif;
+					?>
+					<?php 
+					if($all_pages == 1) :
+						echo "<a href='".$first_page_url."' class='hover current'>1</a>";
+					else :
+						if( $paged > ($page_btn_counts*2)+1 ){
+							if($paged == (3+$page_btn_counts) ) :
+								echo "<a href='".$first_page_url."' class='hover'>1</a>";
+							else :
+								echo "<a href='".$first_page_url."' class='hover'>1</a><span class='pagenavi-first'>...</span>";
+							endif;
+						}
+						if($paged > 0) :
+							for($i = $paged - $page_btn_counts ; $i <= $paged; $i++) {
+								if($i > 0) :
+									$page_num =  "<a href='".$url."/page/".$i."' class='";
+									if($i == $paged) : 
+										$page_num .="current' Onclick='return false;'>".$i."</a>";
+									else :
+										$page_num .="hover'>".$i."</a>";
+									endif;
+									echo $page_num;
+								endif;
+							}
+						endif;
+						if($paged < $all_pages) :
+							for($i = $paged + 1; $i <= $paged + $page_btn_counts; $i++) {
+								if($i <= $all_pages) :
+									echo "<a href='".$url."/page/".$i."' class='hover'>".$i."</a>";
+								else: 
+									break;
+								endif;
+							}
+						endif;
+						if($paged + $page_btn_counts < $all_pages) :
+							if($paged + $page_btn_counts + 1 == $all_pages) :
+								echo "<a href='".$url."/page/".$all_pages."' class='hover'>".$all_pages."</a>";
+							else :
+								echo "<span class='pagenavi-last'>...</span><a href='".$url."/page/".$all_pages."' class='hover'>".$all_pages."</a>";
+							endif;
+						endif;
+					endif;
+					?>
+				</div>
+			</div>
+			<?php endif; ?>
