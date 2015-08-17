@@ -1,4 +1,4 @@
-<?php 
+<?php
 //$url:/page以前のurl
 //$first_page_url:例えば2ページ目からは/archive/page/2と表示したかったりするから、その配慮
 //$posts_per_page:ページに表示する記事件数
@@ -12,8 +12,8 @@ $posts_count = $wpdb->get_var($mysql_query);
 function nochira_pagenavi($url=home_url(),$first_page_url=home_url(),$posts_per_page=10,$page_btn_counts=1,$posts_count){
 			if ($posts_count > $posts_per_page) : 
 			?>
-			<div class="page-navi clearfix index--page-navi">
-				<div class="wp-pagenavi clearFix">
+			<div class="page-navi-wrapper clearfix ">
+				<div class="pagenavi clearFix">
 					<?php
 						$all_pages_amari = $posts_count % $posts_per_page;
 						$all_pages = floor($posts_count / $posts_per_page);
